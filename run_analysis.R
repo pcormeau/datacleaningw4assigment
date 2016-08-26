@@ -52,8 +52,13 @@ datasubset <- inner_join(datasubset, activitylabels)
 datasubset <- select(datasubset, subjectid, activity, everything(), -activityid)
 rm(activitylabels)
 
-#remove symbols from variable names
-names(datasubset) <- gsub("[\\()-]", "", names(datasubset))
+#Make syntactically valid variable names
+names(datasubset) <- make.names(paste("mean",
+                                      gsub("[\\()]", "", #Remove Parentheses
+                                           names(datasubset)
+                                           )
+                                      )
+                                )
 
 #Create a new dataframe with the means for each subject and activity
 datasubsetmeans <- summarise_all(group_by(datasubset, subjectid, activity), mean)
